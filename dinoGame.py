@@ -8,11 +8,11 @@ clock = pygame.time.Clock()
 
 test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 80)
 
-background = pygame.image.load('ui/background.png')
+background = pygame.image.load('ui/background.png').convert()
 # Maybe add separate ground texture?
-text_surface = test_font.render("Dino Armageddon", False, "Orange")
-fireball_surface = pygame.image.load('ui/fireball.png')
-fireball_surface_downscaled = pygame.transform.smoothscale(fireball_surface, (120, 70))
+text_surface = test_font.render("Dino Armageddon", False, "Orange").convert()
+fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
+fireball_surface_downscaled = pygame.transform.smoothscale(fireball_surface, (120, 70)).convert_alpha()
 
 fireball_x_pos =  600
 
@@ -24,8 +24,13 @@ while True:
 
     screen.blit(background, (0, 0))
     screen.blit(text_surface, (350, 300))
-    fireball_x_pos += 1
+
+    if fireball_x_pos < 0:
+        fireball_x_pos = 1380
+
+    fireball_x_pos -= 1
+
     screen.blit(fireball_surface_downscaled, (fireball_x_pos, 250))
 
     pygame.display.update()
-    clock.tick(180)  # Max FPS
+    clock.tick(180)
