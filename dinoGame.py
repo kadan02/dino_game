@@ -9,7 +9,9 @@ clock = pygame.time.Clock()
 test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 80)
 
 background = pygame.image.load('ui/background.png').convert()
-text_surface = test_font.render("Dino Armageddon", False, "Orange").convert()
+
+score_surf = test_font.render("Dino Armageddon", False, "Orange").convert()
+score_rect = score_surf.get_rect(center = (650, 300))
 
 # fireball object (to dodge)
 fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
@@ -27,16 +29,38 @@ while True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+#            if event.type == pygame.MOUSEMOTION:
+#                if player_rect.collidepoint(event.pos):
+#                    print("collision")
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    print('key down')
+            if event.type == pygame.KEYUP:
+                print('key up')
 
     screen.blit(background, (0, 0))
-    screen.blit(text_surface, (350, 300))
+    pygame.draw.rect(screen,'Brown', score_rect)
+    pygame.draw.rect(screen,'Brown', score_rect, 12)
+    screen.blit(score_surf, score_rect)
 
+    # Fireball animation and looping
     fireball_rect.x -=3
     if fireball_rect.right <= 0:
         fireball_rect.left = 1280
 
     screen.blit(fireball_surface_downscaled,fireball_rect)
     screen.blit(player_surface_downscaled,player_rect)
+
+#    if player_rect.colliderect(fireball_rect):
+#         print('collision')
+
+#    mouse_pos = pygame.mouse.get_pos()
+#    if player_rect.collidepoint(mouse_pos):
+
+#    keys = pygame.key.get_pressed()
+#    if keys[pygame.K_SPACE]:
+
+
 
     pygame.display.update()
     clock.tick(180)
