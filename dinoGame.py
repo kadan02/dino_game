@@ -30,7 +30,7 @@ while True:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE and player_rect.bottom >=600:
                     player_gravity = -20
 
 
@@ -44,23 +44,15 @@ while True:
     if fireball_rect.right <= 0:
         fireball_rect.left = 1280
 
+    # Player gravity
     player_gravity += 1
     player_rect.y += player_gravity
+    if player_rect.bottom >= 600:
+        player_rect.bottom = 600
     screen.blit(player_surface_downscaled, player_rect)
 
     screen.blit(fireball_surface_downscaled,fireball_rect)
     screen.blit(player_surface_downscaled,player_rect)
-
-#    if player_rect.colliderect(fireball_rect):
-#         print('collision')
-
-#    mouse_pos = pygame.mouse.get_pos()
-#    if player_rect.collidepoint(mouse_pos):
-
-#    keys = pygame.key.get_pressed()
-#    if keys[pygame.K_SPACE]:
-
-
 
     pygame.display.update()
     clock.tick(60)
