@@ -22,21 +22,17 @@ fireball_rect = fireball_surface_downscaled.get_rect(midbottom = (1280,600)) # f
 player_surface = pygame.image.load("ui/dino_walk.png").convert_alpha()
 player_surface_downscaled = pygame.transform.smoothscale(player_surface, (160, 90)).convert_alpha()
 player_rect = player_surface_downscaled.get_rect(midbottom = (80,600)) # dino position
-
+player_gravity = 0
 
 while True:
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-#            if event.type == pygame.MOUSEMOTION:
-#                if player_rect.collidepoint(event.pos):
-#                    print("collision")
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print('key down')
-            if event.type == pygame.KEYUP:
-                print('key up')
+                    player_gravity = -20
+
 
     screen.blit(background, (0, 0))
     pygame.draw.rect(screen,'Brown', score_rect)
@@ -47,6 +43,10 @@ while True:
     fireball_rect.x -=3
     if fireball_rect.right <= 0:
         fireball_rect.left = 1280
+
+    player_gravity += 1
+    player_rect.y += player_gravity
+    screen.blit(player_surface_downscaled, player_rect)
 
     screen.blit(fireball_surface_downscaled,fireball_rect)
     screen.blit(player_surface_downscaled,player_rect)
@@ -63,4 +63,4 @@ while True:
 
 
     pygame.display.update()
-    clock.tick(180)
+    clock.tick(60)
