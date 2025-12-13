@@ -5,7 +5,7 @@ pygame.init()
 screen =  pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Dino Armageddon')   # Window name
 clock = pygame.time.Clock()
-
+game_active = True
 test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 80)
 
 background = pygame.image.load('ui/background.png').convert()
@@ -29,30 +29,42 @@ while True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player_rect.bottom >=600:
-                    player_gravity = -20
 
+            if game_active:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and player_rect.bottom >=600:
+                        player_gravity = -20
+            else:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        game_active = True
+                        fireball_rect.left = 900
 
-    screen.blit(background, (0, 0))
-    pygame.draw.rect(screen,'Brown', score_rect)
-    pygame.draw.rect(screen,'Brown', score_rect, 12)
-    screen.blit(score_surf, score_rect)
+    if game_active:
+        screen.blit(background, (0, 0))
+        pygame.draw.rect(screen,'Brown', score_rect)
+        pygame.draw.rect(screen,'Brown', score_rect, 12)
+        screen.blit(score_surf, score_rect)
 
-    # Fireball animation and looping
-    fireball_rect.x -=3
-    if fireball_rect.right <= 0:
-        fireball_rect.left = 1280
+        # Fireball animation and looping
+        fireball_rect.x -=3
+        if fireball_rect.right <= 0:
+            fireball_rect.left = 1280
 
-    # Player gravity
-    player_gravity += 1
-    player_rect.y += player_gravity
-    if player_rect.bottom >= 600:
-        player_rect.bottom = 600
-    screen.blit(player_surface_downscaled, player_rect)
+        # Player gravity
+        player_gravity += 1
+        player_rect.y += player_gravity
+        if player_rect.bottom >= 600:
+            player_rect.bottom = 600
+        screen.blit(player_surface_downscaled, player_rect)
 
-    screen.blit(fireball_surface_downscaled,fireball_rect)
-    screen.blit(player_surface_downscaled,player_rect)
+        screen.blit(fireball_surface_downscaled,fireball_rect)
+        screen.blit(player_surface_downscaled,player_rect)
+
+        # collision
+        if fireball_rect.colliderect(player_rect):
+            game_active = False
+    else:
+        screen.fill('red')
 
     pygame.display.update()
     clock.tick(60)
