@@ -6,21 +6,18 @@ def display_score():
     score_surf = test_font.render(str(current_time), False, 'Orange')
     score_rect = score_surf.get_rect(center = (650, 100))
     screen.blit(score_surf, score_rect)
+    return current_time
 
 pygame.init()
 screen =  pygame.display.set_mode((1280, 720))
+test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 50)
 pygame.display.set_caption('Dino Armageddon')   # Window name
 clock = pygame.time.Clock()
-
-game_active = True
-start_time = 0
-
-test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 80)
-
 background = pygame.image.load('ui/background.png').convert()
 
-# score_surf = test_font.render("Dino Armageddon", False, "Orange").convert()
-# score_rect = score_surf.get_rect(center = (650, 300))
+game_active = False
+start_time = 0
+score = 0
 
 # fireball object (to dodge)
 fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
@@ -32,6 +29,10 @@ player_surface = pygame.image.load("ui/dino_walk.png").convert_alpha()
 player_surface_downscaled = pygame.transform.smoothscale(player_surface, (160, 90)).convert_alpha()
 player_rect = player_surface_downscaled.get_rect(midbottom = (80,600)) # dino position
 player_gravity = 0
+
+# intro screen
+game_name =  test_font.render("Dino Armageddon (press space to start)", False, "orange")
+game_name_rect = game_name.get_rect(center = (650, 600))
 
 while True:
     for event in pygame.event.get():
@@ -72,7 +73,14 @@ while True:
         if fireball_rect.colliderect(player_rect):
             game_active = False
     else:
-        screen.fill('red')
+        screen.blit(background, (0, 0))
+        score_message = test_font.render(f"Last score: {score}", False,"orange")
+        score_message_rect = score_message.get_rect(center = (650, 600))
+
+        if score ==0:
+            screen.blit(game_name, game_name_rect)
+        else:
+            screen.blit(score_message, score_message_rect)
 
     pygame.display.update()
     clock.tick(60)
