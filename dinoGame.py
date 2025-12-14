@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from random import randint
 
 def display_score():
     current_time = int(round((pygame.time.get_ticks() - start_time) / 1000,0))
@@ -30,7 +31,7 @@ score = 0
 # fireball object (to dodge)
 fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
 fireball_surface_downscaled = pygame.transform.smoothscale(fireball_surface, (120, 70)).convert_alpha()
-fireball_rect = fireball_surface_downscaled.get_rect(midbottom = (1280,600)) # fireball position
+fireball_rect = fireball_surface_downscaled.get_rect(midbottom = (1400,600)) # fireball position
 fireball_speed = 8
 
 
@@ -60,6 +61,7 @@ while True:
                         game_active = True
                         fireball_rect.left = 900
                         start_time = pygame.time.get_ticks()
+                        fireball_speed = 8
 
     if game_active:
         screen.blit(background, (0, 0))
@@ -70,6 +72,7 @@ while True:
         fireball_rect.x -= fireball_speed
         if fireball_rect.right <= 0:
             fireball_rect.left = 1280
+            fireball_rect.bottom = randint(540, 630)
 
         # Player gravity
         player_gravity += 0.7
