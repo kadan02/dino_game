@@ -31,6 +31,8 @@ score = 0
 fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
 fireball_surface_downscaled = pygame.transform.smoothscale(fireball_surface, (120, 70)).convert_alpha()
 fireball_rect = fireball_surface_downscaled.get_rect(midbottom = (1280,600)) # fireball position
+fireball_speed = 8
+
 
 # player object
 player_surface = pygame.image.load("ui/dino_walk.png").convert_alpha()
@@ -64,7 +66,8 @@ while True:
         score = display_score()
 
         # Fireball animation and looping
-        fireball_rect.x -=8
+        fireball_speed = 8 + score * 0.2
+        fireball_rect.x -= fireball_speed
         if fireball_rect.right <= 0:
             fireball_rect.left = 1280
 
