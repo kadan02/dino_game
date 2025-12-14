@@ -33,6 +33,9 @@ fireball_surface = pygame.image.load('ui/fireball.png').convert_alpha()
 fireball_surface_downscaled = pygame.transform.smoothscale(fireball_surface, (120, 70)).convert_alpha()
 fireball_rect = fireball_surface_downscaled.get_rect(midbottom = (1400,600)) # fireball position
 fireball_speed = 8
+fireball_active = True
+fireball_spawn_time = 0
+fireball_delay = 0
 
 
 # player object
@@ -62,6 +65,10 @@ while True:
                         fireball_rect.left = 900
                         start_time = pygame.time.get_ticks()
                         fireball_speed = 8
+                        fireball_active = True
+                        fireball_rect.left = 900
+                        fireball_spawn_time = 0
+                        fireball_delay = 0
 
     if game_active:
         screen.blit(background, (0, 0))
@@ -69,10 +76,18 @@ while True:
 
         # Fireball animation and looping
         fireball_speed = 8 + score * 0.2
-        fireball_rect.x -= fireball_speed
-        if fireball_rect.right <= 0:
-            fireball_rect.left = 1280
-            fireball_rect.bottom = randint(540, 630)
+        if fireball_active:
+            fireball_rect.x -= fireball_speed
+
+            if fireball_rect.right <= 0:
+                fireball_active = False
+                fireball_spawn_time = pygame.time.get_ticks()
+                fireball_delay = randint(500, 1500)
+        else:
+            if pygame.time.get_ticks() - fireball_spawn_time >= fireball_delay:
+                fireball_active = True
+                fireball_rect.left = 1280
+                fireball_rect.bottom = randint(540, 600)
 
         # Player gravity
         player_gravity += 0.7
@@ -80,14 +95,15 @@ while True:
         if player_rect.bottom >= 600:
             player_rect.bottom = 600
 
-        screen.blit(fireball_surface_downscaled,fireball_rect)
+        if fireball_active:
+            screen.blit(fireball_surface_downscaled, fireball_rect)
+
         screen.blit(player_surface_downscaled,player_rect)
 
         # collision
-        if fireball_rect.colliderect(player_rect):
+        if fireball_active and fireball_rect.colliderect(player_rect):
             game_active = False
             death_sound.play()
-            pygame.mixer.music.stop()
     else:
         screen.blit(background, (0, 0))
         score_message = test_font.render(f"Last score: {score}", False,"orange")
