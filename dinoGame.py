@@ -9,6 +9,14 @@ def display_score():
     return current_time
 
 pygame.init()
+pygame.mixer.init()
+
+# sound effects (from https://sounds.spriters-resource.com/)
+jump_sound = pygame.mixer.Sound("sounds/dino_jump.wav")
+death_sound = pygame.mixer.Sound("sounds/dino_death.WAV")
+jump_sound.set_volume(0.4)
+death_sound.set_volume(0.6)
+
 screen =  pygame.display.set_mode((1280, 720))
 test_font = pygame.font.Font('font/PixelifySans-VariableFont_wght.ttf', 50)
 pygame.display.set_caption('Dino Armageddon')   # Window name
@@ -44,6 +52,7 @@ while True:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE and player_rect.bottom >=600:
                         player_gravity = -20
+                        jump_sound.play()
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         game_active = True
@@ -64,7 +73,6 @@ while True:
         player_rect.y += player_gravity
         if player_rect.bottom >= 600:
             player_rect.bottom = 600
-        screen.blit(player_surface_downscaled, player_rect)
 
         screen.blit(fireball_surface_downscaled,fireball_rect)
         screen.blit(player_surface_downscaled,player_rect)
@@ -72,6 +80,8 @@ while True:
         # collision
         if fireball_rect.colliderect(player_rect):
             game_active = False
+            death_sound.play()
+            pygame.mixer.music.stop()
     else:
         screen.blit(background, (0, 0))
         score_message = test_font.render(f"Last score: {score}", False,"orange")
