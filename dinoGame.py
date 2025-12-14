@@ -43,22 +43,33 @@ player_surface = pygame.image.load("ui/dino_walk.png").convert_alpha()
 player_surface_downscaled = pygame.transform.smoothscale(player_surface, (160, 90)).convert_alpha()
 player_rect = player_surface_downscaled.get_rect(midbottom = (80,600)) # dino position
 player_gravity = 0
+jumping = False
 
 # intro screen
 game_name =  test_font.render("Dino Armageddon (press space to start)", False, "orange")
 game_name_rect = game_name.get_rect(center = (650, 600))
 
 while True:
+
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
 
             if game_active:
+
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE and jumping:
+                        if player_gravity < -15:  # cut jump early
+                            player_gravity = -15
+                        jumping = False
+
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE and player_rect.bottom >=600:
-                        player_gravity = -20
+                    if event.key == pygame.K_SPACE and player_rect.bottom >= 600:
+                        player_gravity = -22  # max jump
+                        jumping = True
                         jump_sound.play()
+
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         game_active = True
@@ -94,6 +105,7 @@ while True:
         player_rect.y += player_gravity
         if player_rect.bottom >= 600:
             player_rect.bottom = 600
+            jumping = False
 
         if fireball_active:
             screen.blit(fireball_surface_downscaled, fireball_rect)
